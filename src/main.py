@@ -1,12 +1,20 @@
 from textnode import TextNode, TextType
 from markdown_to_html import markdown_to_html_node
 from extract_title import extract_title
-import os, shutil
+import os, shutil, sys
+
+args = sys.argv
+
+base_path = "/"
+if len(args) > 1:
+    base_path = args[1]
+
+print(base_path)
 
 def main():
-    copy_source_to_destination("static","public")
+    copy_source_to_destination("static","docs")
     # generate_page("content/index.md", "template.html", "public/index.html")
-    generate_pages_recursive("content", "template.html", "public")
+    generate_pages_recursive("content", "template.html", "docs")
 
 def copy_source_to_destination(source_dir: str, destination_dir: str):
     if not os.path.exists(source_dir):
@@ -43,7 +51,8 @@ def generate_page(from_path, template_path, dest_path):
         # print(f"html content: {content_to_hmtl}")
         # print(f"page title: {page_title}")
 
-        template_content = template_content.replace("{{ Title }}", page_title).replace("{{ Content }}", content_to_hmtl)
+        template_content = template_content.replace("{{ Title }}", page_title).replace("{{ Content }}", content_to_hmtl).replace('href="/', f'href="{base_path}').replace('src="/', f'src="{base_path}')
+
         
         # print(f"template: {template_content}")
 
